@@ -1,0 +1,46 @@
+import openpyxl
+import datetime
+
+# 現在の日付を取得し、それをファイル名に使うように設定します
+current_date = datetime.datetime.now().strftime("%Y/%m/%d")
+filename_date = datetime.datetime.now().strftime("%Y%m%d")
+
+# 新しい表を作成
+wb = openpyxl.Workbook()
+ws = wb.active
+
+# データ入力
+ws['B2'] = '請求書'
+ws['B4'] = '株式会社ABC'
+ws['B5'] = '〒101-0022 東京都千代田区神田錦町300'
+ws['B6'] = 'TEL:03-1234-5678 FAX:03-1234-5678'
+ws['B7'] = '担当者名: 鈴木一郎 様'
+ws['F4'] = 'No.'
+ws['G4'] = '0001'
+ws['F5'] = '日付'
+ws['G5'] = current_date
+
+# ヘッダー
+headers = ['商品名', '数量', '単価', '金額']
+for index, header in enumerate(headers, start=2):  
+    ws.cell(column=index, row=10, value=header)
+
+# データ入力
+data = [
+    ('商品A', 2, 10000, 20000),
+    ('商品B', 1, 15000, 15000),
+]
+for row_index, items in enumerate(data, start=11):  
+    for col_index, item in enumerate(items, start=2): 
+        ws.cell(column=col_index, row=row_index, value=item)
+
+# その他書き込み
+ws['B15'] = '合計'
+ws['E15'] = 35000
+ws['B16'] = '消費税'
+ws['E16'] = 3500
+ws['B17'] = '税込合計'
+ws['E17'] = 38500
+
+# 表をファイルとして保存し、それをダウンロードします
+wb.save(f'請求書_{filename_date}.xlsx')
